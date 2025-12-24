@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log
+bun.lock.bak
+.env*
+.git
+.gitignore
+README.md
