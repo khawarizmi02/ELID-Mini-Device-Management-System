@@ -12,8 +12,7 @@ RUN bun install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Generate Prisma Client
-RUN bunx prisma generate
+# Generate Prisma Client (migrations will run at runtime)
 
 # Runtime stage
 FROM oven/bun:1
@@ -30,8 +29,12 @@ COPY index.ts .
 COPY src ./src
 COPY tsconfig.json .
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["bun", "run", "index.ts"]
+# Run migrations and start the application
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

@@ -27,6 +27,10 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://postgres:password@postgres:5432/device_control_db
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: device_control_db
       PORT: 3000
       NODE_ENV: production
     ports:
@@ -36,6 +40,12 @@ services:
         condition: service_healthy
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   frontend:
     build:
